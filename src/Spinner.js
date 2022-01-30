@@ -1,36 +1,24 @@
 import React, {useEffect, useRef} from 'react';
 import "./App.css"
+import Lost from "./images/lost.png"
 export default function Spinner({spinnerSize, prizeSet, prize, processFn, full}) {
     const sectors = [...prizeSet]
     let countOdds = 0
     prizeSet.forEach(item=>{
         countOdds+=item.odds
     })
-    console.log(countOdds,'count odds');
-    const oops = Math.ceil((sectors.length*(100-countOdds)/100))
-    for(let i=1; i<=oops; i++){
-        const position = (Math.ceil(prizeSet.length/oops)-1)
-        sectors[position*i]={
-            color: "red",
-             label :  "oops",
-             image : "",
-             odds : 1
-         }
+      
+    
+    if(countOdds<100){
+      sectors.push( { color: "#f32e2e" ,
+      label :  "oops!",
+      image : Lost,
+      odds : 19
+    })
     }
 
     useEffect(()=>{
        
-        // const sectors = [
-        //     {color:"#f82", label:"Stack"},
-        //     {color:"#0bf", label:"10"},
-        //     {color:"#fb0", label:"200"},
-        //     {color:"#0fb", label:"50"},
-        //     {color:"#b0f", label:"100"},
-        //     {color:"#f0b", label:"5"},
-        //     {color:"#bf0", label:"500"},
-        //     {color:"#bf0", label:"1000"},
-        //     {color:"#bf0", label:"200"},
-        //   ];
           
           if(countOdds<100){
             const rand = (m, M) => Math.random() * (M - m) + m;
@@ -52,21 +40,25 @@ export default function Spinner({spinnerSize, prizeSet, prize, processFn, full})
             function drawSector(sector, i) {
               const ang = arc * i;
               ctx.save();
-              // COLOR
+              
               ctx.beginPath();
               ctx.fillStyle = sector.color;
               ctx.moveTo(rad, rad);
               ctx.arc(rad, rad, rad, ang, ang + arc);
               ctx.lineTo(rad, rad);
               ctx.fill();
+
+              // COLOR
+
+
               // TEXT
               ctx.translate(rad, rad);
               ctx.rotate(ang + arc / 2);
               ctx.textAlign = "right";
-              ctx.fillStyle = "#fff";
-              ctx.font = "bold 30px sans-serif";
+              ctx.fillStyle = "#34495e";
+              ctx.font = "bold 25px sans-serif";
               ctx.fillText(sector.label, rad - 10, 10);
-              //
+              // 
               ctx.restore();
             };
            
@@ -75,9 +67,9 @@ export default function Spinner({spinnerSize, prizeSet, prize, processFn, full})
               const sector = sectors[getIndex()];
               if(!angVel && EL_spin.textContent !== "SPIN"){
                   if(prize){
-                      processFn(prize)
+                      processFn({label: prize})
                   }else{
-                    processFn(sector.label)
+                    processFn(sector)
                   }
               }
               ctx.canvas.style.transform = `rotate(${ang - PI / 2}rad)`;
@@ -101,11 +93,14 @@ export default function Spinner({spinnerSize, prizeSet, prize, processFn, full})
             
             // INIT
             sectors.forEach(drawSector);
-            rotate(); // Initial rotation
+            rotate();
+           // Initial rotation
             engine(); // Start engine
-            EL_spin.addEventListener("click", () => {
-              if (!angVel) angVel = rand(0.25, 0.35);
-            });
+            if(full){
+              EL_spin.addEventListener("click", () => {
+                if (!angVel) angVel = rand(0.25, 0.35);
+              });
+            }
           }
 
           
@@ -116,10 +111,14 @@ export default function Spinner({spinnerSize, prizeSet, prize, processFn, full})
     </div>
   }else{
     return (
+       
         <div className="main-container">
+            
             <div id="wheelOfFortune">
             <canvas id="wheel" width={spinnerSize} height={spinnerSize}></canvas>
+            {
             <div id="spin">SPIN</div>
+            }
         </div>
             {
                 !full && <div className="content-blocker"></div>
