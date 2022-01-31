@@ -1,6 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 import "./App.css"
 import Lost from "./images/lost.png"
+import Gift from "./images/gift.png"
 export default function Spinner({spinnerSize, prizeSet, prize, processFn, full}) {
     const sectors = [...prizeSet]
     let countOdds = 0
@@ -19,7 +20,9 @@ export default function Spinner({spinnerSize, prizeSet, prize, processFn, full})
 
     useEffect(()=>{
        
-          
+                         // default size for font
+  
+        
           if(countOdds<100){
             const rand = (m, M) => Math.random() * (M - m) + m;
             const tot = sectors.length;
@@ -34,7 +37,16 @@ export default function Spinner({spinnerSize, prizeSet, prize, processFn, full})
             const friction = 0.991; // 0.995=soft, 0.99=mid, 0.98=hard
             let angVel = 0; // Angular velocity
             let ang = 0; // Angle in radians
-            
+
+            function getFont() {
+              var fontBase = 1000,                   // selected default width for canvas
+              fontSize = 35;  
+              var ratio = fontSize / fontBase;   // calc ratio
+              var size = ctx.canvas.width * ratio;  
+              // get font size based on current width
+              // "100px sans-serif" 
+              return (size||15) + 'px sans-serif'; // set font
+          }
             const getIndex = () => Math.floor(tot - ang / TAU * tot) % tot;
             
             function drawSector(sector, i) {
@@ -56,7 +68,8 @@ export default function Spinner({spinnerSize, prizeSet, prize, processFn, full})
               ctx.rotate(ang + arc / 2);
               ctx.textAlign = "right";
               ctx.fillStyle = "#34495e";
-              ctx.font = "bold 25px sans-serif";
+              // ctx.font = "bold 175% sans-serif";
+              ctx.font = getFont()
               ctx.fillText(sector.label, rad - 10, 10);
               // 
               ctx.restore();
@@ -67,9 +80,14 @@ export default function Spinner({spinnerSize, prizeSet, prize, processFn, full})
               const sector = sectors[getIndex()];
               if(!angVel && EL_spin.textContent !== "SPIN"){
                   if(prize){
-                      processFn({label: prize})
+                      processFn({label: prize, image: Gift})
                   }else{
-                    processFn(sector)
+                    if(sector.image){
+                      processFn(sector)
+                    }else{
+                      processFn({...sector,image:Gift})
+
+                    }
                   }
               }
               ctx.canvas.style.transform = `rotate(${ang - PI / 2}rad)`;
@@ -115,7 +133,7 @@ export default function Spinner({spinnerSize, prizeSet, prize, processFn, full})
         <div className="main-container">
             
             <div id="wheelOfFortune">
-            <canvas id="wheel" width={spinnerSize} height={spinnerSize}></canvas>
+            <canvas id="wheel" width={spinnerSize?spinnerSize:window.innerWidth/3} height={spinnerSize?spinnerSize:window.innerWidth/3}></canvas>
             {
             <div id="spin">SPIN</div>
             }

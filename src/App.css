@@ -1,6 +1,4 @@
-.container{
-    width: 500px;
-}
+
 #wheelOfFortune {
     display: inline-block;
     position: relative;
@@ -12,7 +10,7 @@
   }
   
   #spin {
-    font: 1.5em/0 sans-serif;
+    font: 1.5em sans-serif;
     user-select: none;
     cursor: pointer;
     display: flex;
@@ -39,7 +37,11 @@
     border-bottom-color: currentColor;
     border-top: none;
   }
-
+  @media only screen and (max-width: 600px) {
+    #spin{
+      font-size: 1em
+    }
+  }
   .error{
       color: white;
       background-color: rgb(241, 87, 87);
