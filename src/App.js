@@ -106,6 +106,6 @@ export default function App() {
         }
       </Modal>
     </div>
-   <Spinner spinnerSize={500} full={true} prizeSet={prizeSet}  processFn={processFunction}></Spinner>
+   <Spinner spinnerSize={500} full={false} prizeSet={prizeSet}  processFn={processFunction}></Spinner>
   </div>
 }

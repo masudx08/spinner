@@ -33,7 +33,17 @@ export default function Spinner({spinnerSize, prizeSet, prize, processFn, full})
             const PI = Math.PI;
             const TAU = 2 * PI;
             const arc = TAU / sectors.length;
-            
+
+
+            if(spinnerSize>500){
+             EL_spin.style.fontSize = "4rem"
+            }
+
+            const contentBlocker = document.querySelector(".content-blocker")
+            contentBlocker.style.top =ctx.canvas.height/2+"px"
+            console.dir(contentBlocker, "contentBLocker")
+
+
             const friction = 0.991; // 0.995=soft, 0.99=mid, 0.98=hard
             let angVel = 0; // Angular velocity
             let ang = 0; // Angle in radians
@@ -114,15 +124,18 @@ export default function Spinner({spinnerSize, prizeSet, prize, processFn, full})
             rotate();
            // Initial rotation
             engine(); // Start engine
-            if(full){
               EL_spin.addEventListener("click", () => {
-                if (!angVel) angVel = rand(0.25, 0.35);
+                if (!angVel && full) angVel = rand(0.25, 0.35);
               });
-            }
           }
 
           
     },[])
+    function sizeCalculator(){
+
+      return spinnerSize<300 ? 300
+      : spinnerSize?spinnerSize:window.innerWidth/3
+    }
   if(countOdds>100){
     return <div className="error-container">
         <div className="error">Odds must be less than 100</div>
@@ -133,7 +146,7 @@ export default function Spinner({spinnerSize, prizeSet, prize, processFn, full})
         <div className="main-container">
             
             <div id="wheelOfFortune">
-            <canvas id="wheel" width={spinnerSize?spinnerSize:window.innerWidth/3} height={spinnerSize?spinnerSize:window.innerWidth/3}></canvas>
+            <canvas id="wheel" width={sizeCalculator()} height={sizeCalculator()}></canvas>
             {
             <div id="spin">SPIN</div>
             }
